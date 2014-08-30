@@ -1,0 +1,1031 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Programming Rules and Conventions</title>
+</head>
+
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Included text starts here -->
+
+<P>
+<HR>
+<center><h2>Programming Rules and Conventions</h2></center>
+
+<hr>
+
+<h2>Table of Contents</h2>
+ Author: EPK/NP Klas Eriksson, EUA/SU M Williams, J Armstrong <br>
+Document: EPK/NP 95:035
+
+<p><a HREF="#HDT0">Program Development Using Erlang -
+ Programming Rules and Conventions</a>
+
+
+<ul>
+<a HREF="#REF87730"> 1  Purpose</a>
+
+<br>
+<a HREF="#REF76253"> 2  Structure and Erlang Terminology</a>
+
+<br>
+<a HREF="#REF82718"> 3  SW Engineering Principles</a>
+
+<ul>
+<a HREF="#REF59955"> 3.1  Export as few functions as possible from a module</a>
+
+<br>
+<a HREF="#REF86715"> 3.2  Try to reduce intermodule dependencies</a>
+
+<br>
+<a HREF="#REF15399"> 3.3  Put commonly used code into libraries</a>
+
+<br>
+<a HREF="#HDR2"> 3.4  Isolate &quot;tricky&quot; or &quot;dirty&quot; code into separate modules</a>
+
+<br>
+<a HREF="#HDR3"> 3.5  Don't make assumptions about what the caller will do with the results of a function</a>
+
+<br>
+<a HREF="#HDR4"> 3.6  Abstract out common patterns of code or behavior</a>
+
+<br>
+<a HREF="#HDR5"> 3.7  Top-down</a>
+
+<br>
+<a HREF="#HDR6"> 3.8  Don't optimize code</a>
+
+<br>
+<a HREF="#HDR7"> 3.9  Use the principle of &quot;least astonishment&quot;</a>
+
+<br>
+<a HREF="#HDR8"> 3.10  Try to eliminate side effects</a>
+
+<br>
+<a HREF="#HDR9"> 3.11  Don't allow private data structure to &quot;leak&quot; out of a module</a>
+
+<br>
+<a HREF="#HDR10"> 3.12  Make code as deterministic as possible</a>
+
+<br>
+<a HREF="#HDR11"> 3.13  Do not program &quot;defensively&quot;</a>
+
+<br>
+<a HREF="#HDR12"> 3.14  Isolate hardware interfaces with a device driver</a>
+
+<br>
+<a HREF="#HDR13"> 3.15  Do and undo things in the same function</a>
+</ul>
+
+<a HREF="#REF42466"> 4  Error Handling</a>
+
+<ul>
+<a HREF="#HDR14"> 4.1  Separate error handling and normal case code</a>
+
+<br>
+<a HREF="#HDR15"> 4.2  Identify the error kernel</a>
+</ul>
+
+<a HREF="#REF13202"> 5  Processes, Servers and Messages</a>
+
+<ul>
+<a HREF="#REF20254"> 5.1  Implement a process in one module</a>
+
+<br>
+<a HREF="#HDR16"> 5.2  Use processes for structuring the system</a>
+
+<br>
+<a HREF="#HDR17"> 5.3  Registered processes</a>
+
+<br>
+<a HREF="#REF34191"> 5.4  Assign exactly one parallel process to each true concurrent activity in the system</a>
+
+<br>
+<a HREF="#REF26919"> 5.5  Each process should only have one &quot;role&quot;</a>
+
+<br>
+<a HREF="#HDR18"> 5.6  Use generic functions for servers and protocol handlers wherever possible</a>
+
+<br>
+<a HREF="#HDR19"> 5.7  Tag messages</a>
+
+<br>
+<a HREF="#REF28631"> 5.8  Flush unknown messages</a>
+
+<br>
+<a HREF="#HDR20"> 5.9  Write tail-recursive servers</a>
+
+<br>
+<a HREF="#HDR21"> 5.10  Interface functions</a>
+
+<br>
+<a HREF="#REF20649"> 5.11  Time-outs</a>
+
+<br>
+<a HREF="#HDR22"> 5.12  Trapping exits</a>
+</ul>
+
+<a HREF="#REF11301"> 6  Various Erlang Specific Conventions</a>
+
+<ul>
+<a HREF="#HDR23"> 6.1  Use records as the principle data structure</a>
+
+<br>
+<a HREF="#HDR24"> 6.2  Use selectors and constructors</a>
+
+<br>
+<a HREF="#REF32551"> 6.3  Use tagged return values</a>
+
+<br>
+<a HREF="#HDR25"> 6.4  Use catch and throw with extreme care</a>
+
+<br>
+<a HREF="#REF18861"> 6.5  Use the process dictionary with extreme care</a>
+
+<br>
+<a HREF="#HDR26"> 6.6  Don't use import</a>
+
+<br>
+<a HREF="#HDR27"> 6.7  Exporting functions</a>
+</ul>
+
+<a HREF="#REF29671"> 7  Specific Lexical and Stylistic Conventions</a>
+
+<ul>
+<a HREF="#REF19691"> 7.1  Don't write deeply nested code</a>
+
+<br>
+<a HREF="#HDR28"> 7.2  Don't write very large modules</a>
+
+<br>
+<a HREF="#REF32141"> 7.3  Don't write very long functions</a>
+
+<br>
+<a HREF="#HDR29"> 7.4  Don't write very long lines</a>
+
+<br>
+<a HREF="#REF10726"> 7.5  Variable names</a>
+
+<br>
+<a HREF="#REF17122"> 7.6  Function names</a>
+
+<br>
+<a HREF="#HDR30"> 7.7  Module names</a>
+
+<br>
+<a HREF="#HDR31"> 7.8  Format programs in a consistent manner</a>
+</ul>
+
+<a HREF="#REF14536"> 8  Documenting Code</a>
+
+<ul>
+<a HREF="#HDR32"> 8.1  Attribute code</a>
+
+<br>
+<a HREF="#HDR33"> 8.2  Provide references in the code to the specifications</a>
+
+<br>
+<a HREF="#HDR34"> 8.3  Document all the errors</a>
+
+<br>
+<a HREF="#HDR35"> 8.4  Document all the principle data structures in messages</a>
+
+<br>
+<a HREF="#HDR36"> 8.5  Comments</a>
+
+<br>
+<a HREF="#REF20875"> 8.6  Comment each function</a>
+
+<br>
+<a HREF="#HDR37"> 8.7  Data structures</a>
+
+<br>
+<a HREF="#HDR38"> 8.8  File headers, copyright</a>
+
+<br>
+<a HREF="#HDR39"> 8.9  File headers, revision history</a>
+
+<br>
+<a HREF="#REF13816"> 8.10  File Header, description</a>
+
+<br>
+<a HREF="#HDR40"> 8.11  Do not comment out old code - remove it</a>
+
+<br>
+<a HREF="#HDR41"> 8.12  Use a source code control system</a>
+</ul>
+
+<a HREF="#REF66257"> 9  The Most Common Mistakes:</a>
+
+<br>
+<a HREF="#REF36998"> 10  Required Documents</a>
+
+<ul>
+<a HREF="#HDR42"> 10.1  Module Descriptions</a>
+
+<br>
+<a HREF="#REF47531"> 10.2  Message Descriptions</a>
+
+<br>
+<a HREF="#HDR43"> 10.3  Process</a>
+
+<br>
+<a HREF="#REF45959"> 10.4  Error Messages</a>
+</ul>
+</ul>
+
+<hr>
+<!-- This file was created with the fm2html filter.The filter is copyright Norwegian Telecom Research andwas programmed by Jon Stephenson von Tetzchner. -->
+
+
+<h1><a NAME="HDT0">Program Development Using Erlang -
+<br>Programming Rules and Conventions</a></h1>
+<unknown><b>Abstract</b></unknown>
+<p>This is a description of programming rules and advise for how to write systems using Erlang. 
+<p><b>Note: This document is a preliminary document and is not complete.</b>
+<p><b>The requirements for the use of EBC's &quot;Base System&quot; are not documented here, but must be followed at a very early design phase if the &quot;Base System&quot; is to be used. These requirements are documented in 1/10268-AND 10406 Uen &quot;MAP - Start and Error Recovery&quot;.</b>
+
+
+<h2><a NAME="REF87730"> 1  Purpose</a></h2>
+<p>This paper lists some aspects which should be taken into consideration when specifying and programming software systems using Erlang. It does not attempt to give a complete description of general specification and design activities which are independent of the use of Erlang.
+
+<h2><a NAME="REF76253"> 2  Structure and Erlang Terminology</a></h2>
+<p>Erlang systems are divided into <b>modules</b>. Modules are composed of <b>functions </b>and<b> attributes</b>. Functions are either only visible inside a module or they are <b>exported</b> i.e. they can also be called by other functions in other modules. Attributes begin with &quot;<code>-</code>&quot; and are placed in the beginning of a module.
+<p>The <i>work</i> in a system designed using Erlang is done by <b>processes</b>. A process is a <i>job</i> which can use functions in many modules. Processes communicate with each other by <b>sending</b> <b>messages</b>. Processes <b>receive</b> messages which are sent to them, a process can decide which messages it is prepared to receive. Other messages are queued until the receiving process is prepared to receive them.
+<p>A process can supervise the existence of another process by setting up a <b>link</b> to it. When a process terminates, it automatically sends <b>exit signals</b> to the process to which it is linked. The default behavior of a process receiving an exit signal is to terminate and to propagate the signal to its linked processes. A process can change this default behavior by <b>trapping exits</b>, this causes all exit signals sent to a process to be turned into messages.
+<p>A <b>pure function</b> is a function that returns the same value given the same arguments regardless of the context of the call of the function. This is what we normally expect from a mathematical function. A function that is not pure is said to have <b>side effects</b>. 
+<p>Side effects typically occur if a function a) sends a message b) receives a message c) calls<code> exit </code>d) calls any BIF which changes a processes environment or mode of operation (e.g. get/1, put/2, erase/1, process_flag/2 etc).
+<p><b>Warning</b>: This document contains examples of bad code.
+
+<h2><a NAME="REF82718"> 3  SW Engineering Principles</a></h2>
+<h3><a NAME="REF59955"> 3.1  Export as few functions as possible from a module</a></h3>
+<p>Modules are the basic code structuring entity in Erlang. A module can contain a large number of functions but only functions which are included in the export list of the module can be called from outside the module.
+<p>Seen from the outside the complexity of a module depends upon the number of functions which are exported from the module. A module which exports one or two functions is usually easier to understand than a module which exports dozens of functions.
+<p>Modules where the ratio of exported/non-exported functions is low are desirable in that a user of the module only needs to understand the functionality of the functions which are exported from the module. 
+<p>In addition, the writer or maintainer of the code in the module can change the internal structure of the module in any appropriate manner provided the external interface remains unchanged.
+<h3><a NAME="REF86715"> 3.2  Try to reduce intermodule dependencies</a></h3>
+<p>A module which calls functions in many different modules will be more difficult to maintain than a module which only calls functions in a few different modules. 
+<p>This is because each time we make a change to a module interface, we have to check all places in the code where this module is called. Reducing the interdependencies between modules simplifies the problem of maintaining these modules.
+<p>We can simplify the system structure by reducing the number of different modules which are called from a given module.
+<p>Note also that it is desirable that the inter-module calling dependencies form a tree and not a cyclic graph. Example:
+<p>
+<center><img SRC="/images/module-dep-ok.gif" WIDTH="259" HEIGHT="87"></center>
+
+
+<p>But not
+<p><center><img SRC="/images/module-dep-bad.gif" WIDTH="260" HEIGHT="107"></center>
+
+<h3><a NAME="REF15399"> 3.3  Put commonly used code into libraries</a></h3>
+<p>Commonly used code should be placed into libraries. The libraries should be collections of related functions. Great effort should be made in ensuring that libraries contain functions of the same type. Thus a library such as <code>lists</code> containing only functions for manipulating lists is a good choice, whereas a library, <code>lists_and_maths </code>containing a combination of functions for manipulating lists and for mathematics is a very bad choice.
+<p>The best library functions have no side effects. Libraries with functions with side effects limit the re-usability.
+<h3><a NAME="HDR2"> 3.4  Isolate &quot;tricky&quot; or &quot;dirty&quot; code into separate modules</a></h3>
+<p>Often a problem can be solved by using a mixture of clean and dirty code. Separate the clean and dirty code into separate modules.
+<p>Dirty code is code that does dirty things. Example:
+
+<ul>
+<p><li>Uses the process dictionary.
+<br>
+<p><li>Uses <code>erlang:process_info/1</code> for strange purposes.
+<br>
+<p><li>Does anything that you are not supposed to do (but have to do).
+<br></ul>
+
+
+<p>Concentrate on trying to maximize the amount of clean code and minimize the amount of dirty code. Isolate the dirty code and clearly comment or otherwise document all side effects and problems associated with this part of the code.
+<h3><a NAME="HDR3"> 3.5  Don't make assumptions about what the caller will do with the results of a function</a></h3>
+<p>Don't make assumptions about why a function has been called or about what the caller of a function wishes to do with the results.
+<p>For example, suppose we call a routine with certain arguments which may be invalid. The implementer of the routine should not make any assumptions about what the caller of the function wishes to happen when the arguments are invalid.
+<p>Thus we should not write code like
+<pre>
+
+do_something(Args) -&gt; 
+  case check_args(Args) of 
+    ok -&gt; 
+      {ok, do_it(Args)}; 
+    {error, What} -&gt; 
+      String = format_the_error(What), 
+      io:format(&quot;* error:~s\n&quot;, [String]), %% Don't do this
+      error 
+  end.
+</pre>
+
+<p>Instead write something like:
+<pre>
+do_something(Args) -&gt;
+  case check_args(Args) of
+    ok -&gt;
+      {ok, do_it(Args)};
+    {error, What} -&gt;
+      {error, What}
+  end.
+
+error_report({error, What}) -&gt;
+  format_the_error(What).
+</pre>
+
+<p> In the former case the error string is always printed on standard output, in the latter case an error descriptor is returned to the application. The application can now decide what to do with this error descriptor.
+<p>By calling <code>error_report/1</code> the application can convert the error descriptor to a printable string and print it if so required. But this may not be the desired behavior - in any case the decision as to what to do with the result is left to the caller.
+<h3><a NAME="HDR4"> 3.6  Abstract out common patterns of code or behavior</a></h3>
+<p>Whenever you have the same pattern of code in two or more places in the code try to isolate this in a common function and call this function instead of having the code in two different places. Copied code requires much effort to maintain.
+<p>If you see similar patterns of code (i.e. almost identical) in two or more places in the code it is worth taking some time to see if one cannot change the problem slightly to make the different cases the same and then write a small amount of additional code to describe the differences between the two.
+<p>Avoid &quot;copy&quot; and &quot;paste&quot; programming, use functions!
+<h3><a NAME="HDR5"> 3.7  Top-down</a></h3>
+<p>Write your program using the top-down fashion, not bottom-up (starting with details). Top-down is a nice way of successively approaching details of the implementation, ending up with defining primitive functions. The code will be independent of representation since the representation is not known when the higher levels of code are designed.
+
+<h3><a NAME="HDR6"> 3.8  Don't optimize code</a></h3>
+<p>Don't optimize your code at the first stage. First make it right, then (if necessary) make it fast (while keeping it right).
+<h3><a NAME="HDR7"> 3.9  Use the principle of &quot;least astonishment&quot;</a></h3>
+<p>The system should always respond in a manner which causes the &quot;least astonishment&quot; to the user - i.e. a user should be able to predict what will happen when they do something and not be astonished by the result.
+<p>This has to do with consistency, a consistent system where different modules do things in a similar manner will be much easier to understand than a system where each module does things in a different manner.
+<p>If you get astonished by what a function does, either your function solves the wrong problem or it has a wrong name.
+<h3><a NAME="HDR8"> 3.10  Try to eliminate side effects</a></h3>
+<p>Erlang has several primitives which have side effects. Functions which use these <i>cannot be easily re-used</i> since they cause permanent changes to their environment and you have to know the exact state of the process before calling such routines.
+<p>Write as much as possible of the code with side-effect free code.
+<p>Maximize the number of pure functions.
+<p>Collect together the functions which have side effect and clearly document all the side effects.
+<p>With a little care most code can be written in a side-effect free manner - this will make the system a lot easier to maintain, test and understand.
+
+<h3><a NAME="HDR9"> 3.11  Don't allow private data structure to &quot;leak&quot; out of a module</a></h3>
+<p>This is best illustrated by a simple example. We define a simple module called queue - to implement queues:
+<pre>
+-module(queue).
+-export([add/2, fetch/1]).
+
+add(Item, Q) -&gt; 
+  lists:append(Q, [Item]).
+
+fetch([H|T]) -&gt; 
+  {ok, H, T}; 
+fetch([]) -&gt; 
+  empty.
+</pre>
+
+<p>This implements a queue as a list, unfortunately to use this the user must know that the queue is represented as a list. A typical program to use this might contain the following code fragment:
+
+<pre>
+NewQ = [], % Don't do this
+Queue1 = queue:add(joe, NewQ), 
+Queue2 = queue:add(mike, Queue1), ....
+</pre>
+
+<p>This is bad - since the user a) needs to know that the queue is represented as a list and b) the implementer cannot change the internal representation of the queue (this they might want to do later to provide a better version of the module).
+<p>Better is:
+<pre>
+-module(queue).
+-export([new/0, add/2, fetch/1]).
+
+new() -&gt; 
+  [].
+
+add(Item, Q) -&gt; 
+  lists:append(Q, [Item]).
+
+fetch([H|T]) -&gt; 
+  {ok, H, T}; 
+fetch([]) -&gt; 
+  empty.
+</pre>
+
+<p>Now we can write:
+
+<pre>
+NewQ = queue:new(), 
+Queue1 = queue:add(joe, NewQ), 
+Queue2 = queue:add(mike, Queue1), ...
+</pre>
+
+<p>Which is much better and corrects this problem. Now suppose the user needs to know the length of the queue, they might be tempted to write:
+
+<pre>
+Len = length(Queue) % Don't do this
+</pre>
+
+<p>since they know that the queue is represented as a list. Again this is bad programming practice and leads to code which is very difficult to maintain and understand. If they need to know the length of the queue then a length function must be added to the module, thus:
+
+<pre>
+-module(queue).
+-export([new/0, add/2, fetch/1, len/1]).
+
+new() -&gt; [].
+
+add(Item, Q) -&gt;
+  lists:append(Q, [Item]).
+
+fetch([H|T]) -&gt; 
+  {ok, H, T}; 
+
+fetch([]) -&gt; 
+  empty.
+
+len(Q) -&gt; 
+  length(Q).
+</pre>
+
+<p>Now the user can call <code>queue:len(Queue)</code> instead. 
+<p>Here we say that we have &quot;abstracted out&quot; all the details of the queue (the queue is in fact what is called an &quot;abstract data type&quot;).
+<p>Why do we go to all this trouble? - the practice of abstracting out internal details of the implementation allows us to change the implementation without changing the code of the modules which call the functions in the module we have changed. So, for example, a better implementation of the queue is as follows:
+
+<pre>
+-module(queue).
+-export([new/0, add/2, fetch/1, len/1]).
+
+new() -&gt; 
+  {[],[]}.
+
+add(Item, {X,Y}) -&gt; % Faster addition of elements
+  {[Item|X], Y}.
+
+fetch({X, [H|T]}) -&gt; 
+  {ok, H, {X,T}}; 
+
+fetch({[], []) -&gt; 
+  empty; 
+
+fetch({X, []) -&gt; 
+  % Perform this heavy computation only sometimes.
+  fetch({[],lists:reverse(X)}).
+
+len({X,Y}) -&gt; 
+  length(X) + length(Y).
+</pre>
+
+<h3><a NAME="HDR10"> 3.12  Make code as deterministic as possible</a></h3>
+<p>A deterministic program is one which will always run in the same manner no matter how many times the program is run. A non-deterministic program may deliver different results each time it is run. For debugging purposes it is a good idea to make things as deterministic as possible. This helps make errors reproducible.
+<p>For example, suppose one process has to start five parallel processes and then check that they have started correctly, suppose further that the order in which these five are started does not matter.
+<p>We could then choose to either start all five in parallel and then check that they have all started correctly but it would be better to start them one at a time and check that each one has started correctly before starting the next one.
+
+<h3><a NAME="HDR11"> 3.13  Do not program &quot;defensively&quot;</a></h3>
+<p>A defensive program is one where the programmer does not &quot;trust&quot; the input data to the part of the system they are programming. In general one should not test input data to functions for correctness. Most of the code in the system should be written with the assumption that the input data to the function in question is correct. Only a small part of the code should actually perform any checking of the data. This is usually done when data &quot;enters&quot; the system for the first time, once data has been checked as it enters the system it should thereafter be assumed correct.
+<p>Example:
+
+<pre>
+%% Args: Option is all|normal
+get_server_usage_info(Option, AsciiPid) -&gt;
+  Pid = list_to_pid(AsciiPid),
+  case Option of
+    all -&gt; get_all_info(Pid);
+    normal -&gt; get_normal_info(Pid)
+  end.
+</pre>
+
+<p>The function will crash if <code>Option</code> neither <code>normal</code> nor <code>all</code>, and it should do that. The caller is responsible for supplying correct input.
+<h3><a NAME="HDR12"> 3.14  Isolate hardware interfaces with a device driver</a></h3>
+<p>Hardware should be isolated from the system through the use of device drivers. The device drivers should implement hardware interfaces which make the hardware appear as if they were Erlang processes. Hardware should be made to look and behave like normal Erlang processes. Hardware should appear to receive and send normal Erlang messages and should respond in the conventional manner when errors occur.
+
+<h3><a NAME="HDR13"> 3.15  Do and undo things in the same function</a></h3>
+<p>Suppose we have a program which opens a file, does something with it and closes it later. This should be coded as:
+
+<pre>
+do_something_with(File) -&gt; 
+  case file:open(File, read) of, 
+    {ok, Stream} -&gt;
+      doit(Stream), 
+      file:close(Stream) % The correct solution
+    Error -&gt; Error
+  end.
+</pre>
+
+<p>Note the symmetry in opening the file <code>(file:open)</code>and closing it <code>(file:close</code>) in the same routine. The solution below is much harder to follow and it is not obvious which file that is closed. Don't program it like this:
+
+<pre>
+do_something_with(File) -&gt; 
+  case file:open(File, read) of, 
+    {ok, Stream} -&gt;
+      doit(Stream)
+    Error -&gt; Error
+  end.
+
+doit(Stream) -&gt; 
+  ...., 
+  func234(...,Stream,...).
+  ...
+
+func234(..., Stream, ...) -&gt;
+  ...,
+  file:close(Stream) %% Don't do this
+</pre>
+
+<h2><a NAME="REF42466"> 4  Error Handling</a></h2>
+<h3><a NAME="HDR14"> 4.1  Separate error handling and normal case code</a></h3>
+<p>Don't clutter code for the &quot;normal case&quot; with code designed to handle exceptions. As far as possible you should only program the normal case. If the code for the normal case fails, your process should report the error and crash as soon as possible. Don't try to fix up the error and continue. The error should be handled in a different process (<a HREF="#REF26919">See &quot;Each process should only have one &quot;role&quot;&quot; on page 15.</a>).
+<p>Clean separation of error recovery code and normal case code should greatly simplify the overall system design.
+<p>The error logs which are generated when a software or hardware error is detected will be used at a later stage to diagnose and correct the error. A permanent record of any information that will be helpful in this process should be kept.
+<h3><a NAME="HDR15"> 4.2  Identify the error kernel</a></h3>
+<p>One of the basic elements of system design is identifying which part of the system has to be correct and which part of the system does not have to be correct.
+<p>In conventional operating system design the kernel of the system is assumed to be, and must be, correct, whereas all user application programs do not necessarily have to be correct. If a user application program fails this will only concern the application where the failure occurred but should not affect the integrity of the system as a whole.
+<p>The first part of the system design must be to identify that part of the system which must be correct; we call this the error kernel. Often the error kernel has some kind of real-time memory resident data base which stores the state of the hardware.
+
+<h2><a NAME="REF13202"> 5  Processes, Servers and Messages</a></h2>
+<h3><a NAME="REF20254"> 5.1  Implement a process in one module</a></h3>
+<p>Code for implementing a single process should be contained in one module. A process can call functions in any library routines but the code for the &quot;top loop&quot; of the process should be contained in a single module. The code for the top loop of a process should not be split into several modules - this would make the flow of control extremely difficult to understand. This does not mean that one should not make use of generic server libraries, these are for helping structuring the control flow.
+<p>Conversely, code for no more than one kind of process should be implemented in a single module. Modules containing code for several different processes can be extremely difficult to understand. The code for each individual process should be broken out into a separate module.
+<h3><a NAME="HDR16"> 5.2  Use processes for structuring the system</a></h3>
+<p>Processes are the basic system structuring elements. But don't use processes and message passing when a function call can be used instead.
+<h3><a NAME="HDR17"> 5.3  Registered processes</a></h3>
+<p>Registered processes should be registered with the same name as the module. This makes it easy to find the code for a process.
+<p>Only register processes that should live a long time.
+<h3><a NAME="REF34191"> 5.4  Assign exactly one parallel process to each true concurrent activity in the system</a></h3>
+<p>When deciding whether to implement things using sequential or parallel processes then the structure implied by the intrinsic structure of the problem should be used. The main rule is:
+<p>&quot;Use one parallel process to model each truly concurrent activity in the real world&quot; 
+<p>If there is a one-to-one mapping between the number of parallel processes and the number of truly parallel activities in the real world, the program will be easy to understand.
+
+<h3><a NAME="REF26919"> 5.5  Each process should only have one &quot;role&quot;</a></h3>
+<p>Processes can have different roles in the system, for example in the client-server model.
+<p>As far as possible a process should only have one role, i.e. it can be a client or a server but should not combine these roles.
+<p>Other roles which process might have are:
+<p>Supervisor: watches other processes and restarts them if they fail.
+<br>Worker: a normal work process (can have errors).
+<br>Trusted Worker: not allowed to have errors.
+<h3><a NAME="HDR18"> 5.6  Use generic functions for servers and protocol handlers wherever possible</a></h3>
+<p>In many circumstances it is a good idea to use generic server programs such as the <code>generic</code> server implemented in the standard libraries. Consistent use of a small set of generic servers will greatly simplify the total system structure.
+<p>The same is possible for most of the protocol handling software in the system.
+<h3><a NAME="HDR19"> 5.7  Tag messages</a></h3>
+<p>All messages should be tagged. This makes the order in the receive statement less important and the implementation of new messages easier. 
+<p>Don't program like this:
+<pre>
+loop(State) -&gt;
+  receive
+    ...
+    {Mod, Funcs, Args} -&gt; % Don't do this
+      apply(Mod, Funcs, Args},
+      loop(State);
+    ...
+  end.
+</pre>
+
+<p>The new message <code>{get_status_info, From, Option}</code> will introduce a conflict if it is placed below the <code>{Mod, Func, Args}</code> message.
+<p>If messages are synchronous, the return message should be tagged with a new atom, describing the returned message. Example: if the incoming message is tagged <code>get_status_info</code>, the returned message could be tagged <code>status_info</code>. One reason for choosing different tags is to make debugging easier.
+
+<p>This is a good solution:
+
+<pre>
+loop(State) -&gt;
+  receive
+    ...
+    {execute, Mod, Funcs, Args} -&gt; % Use a tagged message.
+      apply(Mod, Funcs, Args},
+      loop(State);
+    {get_status_info, From, Option} -&gt;
+      From ! {status_info, get_status_info(Option, State)},
+      loop(State);    
+    ...
+  end.
+</pre>
+
+<h3><a NAME="REF28631"> 5.8  Flush unknown messages</a></h3>
+<p>Every server should have an <code>Other</code> alternative in at least one <code>receive</code> statement. This is to avoid filling up message queues. Example:
+
+<pre>
+main_loop() -&gt;
+  receive
+    {msg1, Msg1} -&gt; 
+      ...,
+      main_loop();
+    {msg2, Msg2} -&gt;
+      ...,
+      main_loop();
+    Other -&gt; % Flushes the message queue.
+      error_logger:error_msg(
+          &quot;Error: Process ~w got unknown msg ~w~n.&quot;, 
+          [self(), Other]),
+      main_loop()
+  end.
+</pre>
+
+<h3><a NAME="HDR20"> 5.9  Write tail-recursive servers</a></h3>
+<p>All servers <i>must</i> be tail-recursive, otherwise the server will consume memory until the system runs out of it.
+
+<p>Don't program like this:
+<pre>
+loop() -&gt;
+  receive
+    {msg1, Msg1} -&gt; 
+      ...,
+      loop();
+    stop -&gt;
+      true;
+    Other -&gt;
+      error_logger:log({error, {process_got_other, self(), Other}}),
+      loop()
+  end,
+  io:format(&quot;Server going down&quot;).                % Don't do this! 
+                % This is NOT tail-recursive
+</pre>
+
+<p>This is a correct solution:
+<pre>
+loop() -&gt;
+  receive
+    {msg1, Msg1} -&gt; 
+      ...,
+      loop();
+    stop -&gt;
+      io:format(&quot;Server going down&quot;);
+    Other -&gt;
+      error_logger:log({error, {process_got_other, self(), Other}}),
+      loop()
+  end. % This is tail-recursive
+
+</pre>
+
+<p>If you use some kind of server library, for example <code>generic</code>, you automatically avoid doing this mistake.
+<h3><a NAME="HDR21"> 5.10  Interface functions</a></h3>
+<p>Use functions for interfaces whenever possible, avoid sending messages directly. Encapsulate message passing into interface functions. There are cases where you can't do this.
+<p>The message protocol is internal information and should be hidden to other modules.
+<p>Example of interface function:
+
+<pre>
+-module(fileserver).
+-export([start/0, stop/0, open_file/1, ...]).
+
+open_file(FileName) -&gt;
+  fileserver ! {open_file_request, FileName},
+  receive
+    {open_file_response, Result} -&gt; Result
+  end.
+
+...&lt;code&gt;...
+
+</pre>
+
+<h3><a NAME="REF20649"> 5.11  Time-outs</a></h3>
+<p>Be careful when using <code>after </code>in <code>receive</code> statements. Make sure that you handle the case when the message arrives later (<a HREF="#REF28631">See &quot;Flush unknown messages&quot; on page 16.</a>).
+<h3><a NAME="HDR22"> 5.12  Trapping exits</a></h3>
+<p>As few processes as possible should trap exit signals. Processes should either trap exits or they should not. It is usually very bad practice for a process to &quot;toggle&quot; trapping exits.
+
+<h2><a NAME="REF11301"> 6  Various Erlang Specific Conventions</a></h2>
+<h3><a NAME="HDR23"> 6.1  Use records as the principle data structure</a></h3>
+<p>Use records as the principle data structure. A record is a tagged tuple and was introduced in Erlang version 4.3 and thereafter (see EPK/NP 95:034). It is similar to <code>struct</code> in C or <code>record</code> in Pascal.
+<p>If the record is to be used in several modules, its definition should be placed in a header file (with suffix .hrl) that is included from the modules. If the record is only used from within one module, the definition of the record should be in the beginning of the file the module is defined in.
+<p>The record features of Erlang can be used to ensure cross module consistency of data structures and should therefore be used by interface functions when passing data structures between modules.
+<h3><a NAME="HDR24"> 6.2  Use selectors and constructors</a></h3>
+<p>Use selectors and constructors provided by the record feature for managing instances of records. Don't use matching that explicitly assumes that the record is a tuple. Example:
+
+<pre>
+demo() -&gt;
+  P = #person{name = &quot;Joe&quot;, age = 29},
+  #person{name = Name1} = P,% Use matching, or...
+  Name2 = P#person.name. % use the selector like this.
+</pre>
+
+<p>Don't program like this:
+<pre>
+demo() -&gt;
+  P = #person{name = &quot;Joe&quot;, age = 29},
+  {person, Name, _Age, _Phone, _Misc} = P. % Don't do this
+</pre>
+
+<h3><a NAME="REF32551"> 6.3  Use tagged return values</a></h3>
+<p>Use tagged return values.
+<p>Don't program like this:
+
+<pre>
+keysearch(Key, [{Key, Value}|_Tail]) -&gt;
+  Value; %% Don't return untagged values!
+keysearch(Key, [{_WrongKey, _WrongValue} | Tail]) -&gt;
+  keysearch(Key, Tail);
+keysearch(Key, []) -&gt;
+  false.
+</pre>
+Then the {Key, Value} cannot contain the false value. This is the correct solution:
+
+<pre>
+
+keysearch(Key, [{Key, Value}|_Tail]) -&gt;
+  {value, Value}; %% Correct. Return a tagged value.
+keysearch(Key, [{_WrongKey, _WrongValue} | Tail]) -&gt;
+  keysearch(Key, Tail);
+keysearch(Key, []) -&gt;
+  false.
+</pre>
+
+<h3><a NAME="HDR25"> 6.4  Use catch and throw with extreme care</a></h3>
+<p>Do not use <code>catch</code> and <code>throw</code> unless you know exactly what you are doing! Use <code>catch</code> and<code> throw</code> as little as possible.
+<p><code>Catch</code> and <code>throw</code> can be useful when the program handles complicated and unreliable input (from the outside world, not from your own reliable program) that may cause errors in many places deeply within the code. One example is a compiler.
+<h3><a NAME="REF18861"> 6.5  Use the process dictionary with extreme care</a></h3>
+<p>Do not use <code>get</code> and <code>put</code> etc. unless you know exactly what you are doing! Use <code>get</code> and <code>put</code> etc. as little as possible.
+<p>A function that uses the process dictionary can be rewritten by introducing a new argument. 
+
+<p>Example:
+<br>Don't program like this:
+<pre>
+tokenize([H|T]) -&gt;
+  ...;
+tokenize([]) -&gt;
+  case get_characters_from_device(get(device)) of % Don't use get/1!
+    eof -&gt; [];
+    {value, Chars} -&gt;
+      tokenize(Chars)
+  end.
+</pre>
+
+<p>The correct solution:
+<pre>
+tokenize(_Device, [H|T]) -&gt;
+  ...;
+tokenize(Device, []) -&gt;
+  case get_characters_from_device(Device) of     % This is better
+    eof -&gt; [];
+    {value, Chars} -&gt;
+      tokenize(Device, Chars)
+  end.
+</pre>
+
+<p>The use of <code>get </code>and <code>put</code> will cause a function to behave differently when called with the same input at different occasions. This makes the code hard to read since it is non-deterministic. Debugging will be more complicated since a function using <code>get </code>and <code>put</code> is a function of not only of its argument, but also of the process dictionary. Many of the run time errors in Erlang (for example <code>bad_match</code>) include the arguments to a function, but never the process dictionary.
+<h3><a NAME="HDR26"> 6.6  Don't use import</a></h3>
+<p>Don't use <code>-import</code>, using it makes the code harder to read since you cannot directly see in what module a function is defined. Use <code>exref</code> (Cross Reference Tool) to find module dependencies.
+<h3><a NAME="HDR27"> 6.7  Exporting functions</a></h3>
+<p>Make a distinction of why a function is exported. A function can be exported for the following reasons (for example):
+
+<ul>
+<p><li>It is a user interface to the module.
+<br>
+<p><li>It is an interface function for other modules.
+<br>
+<p><li>It is called from <code>apply</code>, <code>spawn</code> etc. but only from within its module.
+<br>
+</ul>
+
+
+<p>Use different <code>-export</code> groupings and comment them accordingly. Example:
+<pre>
+%% user interface
+-export([help/0, start/0, stop/0, info/1]).
+
+%% intermodule exports
+-export([make_pid/1, make_pid/3]).
+-export([process_abbrevs/0, print_info/5]).
+
+%% exports for use within module only
+-export([init/1, info_log_impl/1]).
+
+</pre>
+
+<h2><a NAME="REF29671"> 7  Specific Lexical and Stylistic Conventions</a></h2>
+<h3><a NAME="REF19691"> 7.1  Don't write deeply nested code</a></h3>
+<p>Nested code is code containing <code>case/if/receive</code> statements within other <code>case/if/receive</code> statements. It is bad programming style to write deeply nested code - the code has a tendency to drift across the page to the right and soon becomes unreadable. Try to limit most of your code to a maximum of two levels of indentation. This can be achieved by dividing the code into shorter functions.
+<h3><a NAME="HDR28"> 7.2  Don't write very large modules</a></h3>
+<p>A module should not contain more than 400 lines of source code. It is better to have several small modules than one large one.
+<h3><a NAME="REF32141"> 7.3  Don't write very long functions</a></h3>
+<p>Don't write functions with more than 15 to 20 lines of code. Split large function into several smaller ones. Don't solve the problem by writing long lines.
+<h3><a NAME="HDR29"> 7.4  Don't write very long lines</a></h3>
+<p>Don't write very long lines. A line should not have more than 80 characters. (It will for example fit into an A4 page.)
+<p>In Erlang 4.3 and thereafter string constants will be automatically concatenated. Example:
+
+<pre>
+io:format(&quot;Name: ~s, Age: ~w, Phone: ~w ~n&quot; 
+      &quot;Dictionary: ~w.~n&quot;, [Name, Age, Phone, Dict])
+</pre>
+
+<h3><a NAME="REF10726"> 7.5  Variable names</a></h3>
+<p>Choose meaningful variable names - this is very difficult. 
+<p>If a variable name consists of several words, use &quot;_&quot; or a capitalized letter to separate them. Example: <code>My_variable</code> or <code>MyVariable</code>.
+<p>Avoid using &quot;_&quot; as don't care variable, use variables beginning with &quot;_&quot; instead. Example: <code>_Name</code>. If you at a later stage need the value of the variable, you just remove the leading underscore. You will not have problem finding what underscore to replace and the code will be easier to read.
+
+<h3><a NAME="REF17122"> 7.6  Function names</a></h3>
+<p>The function name must agree exactly with what the function does. It should return the kind of arguments implied by the function name. It should not surprise the reader. Use conventional names for conventional functions (<code>start</code>, <code>stop</code>, <code>init</code>, <code>main_loop</code>).
+<p>Functions in different modules that solves the same problem should have the same name. Example: <code>Module:module_info()</code>.
+<p>Bad function names is one of the most common programming errors - good choice of names is very difficult!
+<p>Some kind of naming convention is very useful when writing lots of different functions. For example, the name prefix &quot;<code>is_</code>&quot; could be used to signify that the function in question returns the atom true or false.
+
+<pre>
+is_...() -&gt; true | false
+check_...() -&gt; {ok, ...} | {error, ...}
+</pre>
+
+<h3><a NAME="HDR30"> 7.7  Module names</a></h3>
+<p>Erlang has a flat module structure (i.e. there are not modules within modules). Often, however, we might like to simulate the effect of a hierarchical module structure. This can be done with sets of related modules having the same module prefix.
+<p>If, for example, an ISDN handler is implemented using five different and related modules. These module should be given names such as:
+<pre>
+isdn_init 
+isdn_partb 
+isdn_...
+</pre>
+<h3><a NAME="HDR31"> 7.8  Format programs in a consistent manner</a></h3>
+<p>A consistent programming style will help you, and other people, to understand your code. Different people have different styles concerning indentation, usage of spaces etc.
+<p>For example you might like to write tuples with a single comma between the elements:
+<pre>
+{12,23,45}
+</pre>
+<p>Other people might use a comma followed by a blank:
+<pre>
+{12, 23, 45}
+</pre>
+<p>Once you have adopted style - stick to it.
+<p>Within a larger project, the same style should be used in all parts.
+
+<h2><a NAME="REF14536"> 8  Documenting Code</a></h2>
+<h3><a NAME="HDR32"> 8.1  Attribute code</a></h3>
+<p>You must always correctly attribute all code in the module header. Say where all ideas contributing to the module came from - if your code was derived from some other code say where you got this code from and who wrote it.
+<p>Never steal code - stealing code is taking code from some other module editing it and<i> forgetting</i> to say who wrote the original. 
+<p>Examples of useful attributes are:
+<pre>
+-revision('Revision: 1.14 ').
+-created('Date: 1995/01/01 11:21:11 ').
+-created_by('eklas@erlang').
+-modified('Date: 1995/01/05 13:04:07 ').
+-modified_by('mbj@erlang').
+</pre>
+<h3><a NAME="HDR33"> 8.2  Provide references in the code to the specifications</a></h3>
+<p>Provide cross references in the code to any documents relevant to the understanding of the code. For example, if the code implements some communication protocol or hardware interface give an exact reference with document and page number to the documents that were used to write the code.
+<h3><a NAME="HDR34"> 8.3  Document all the errors</a></h3>
+<p>All errors should be listed together with an English description of what they mean in a separate document (<a HREF="#REF45959">See &quot;Error Messages&quot; on page 32.</a>)
+<p>By errors we mean errors which have been detected by the system.
+<p>At a point in your program where you detect a logical error call the error logger thus:
+<pre>
+error_logger:error_msg(Format, {Descriptor, Arg1, Arg2, ....})
+</pre>
+<p>And make sure that the line <code>{Descriptor, Arg1,...}</code> is added to the error message documents.
+<h3><a NAME="HDR35"> 8.4  Document all the principle data structures in messages</a></h3>
+<p>Use tagged tuples as the principle data structure when sending messages between different parts of the system.
+<p>The record features of Erlang (introduced in Erlang versions 4.3 and thereafter) can be used to ensure cross module consistency of data structures.
+
+<p>An English description of all these data structure should be documented (<a HREF="#REF47531">See &quot;Message Descriptions&quot; on page 32.</a>).
+<h3><a NAME="HDR36"> 8.5  Comments</a></h3>
+<p>Comments should be clear and concise and avoid unnecessary wordiness. Make sure that comments are kept up to date with the code. Check that comments add to the understanding of the code. Comments should be written in English. 
+<p>Comments about the module shall be without indentation and start with three percent characters (<code>%%%)</code>, (<a HREF="#REF13816">See &quot;File Header, description&quot; on page 29.</a>).
+<p>Comments about a function shall be without indentation and start with two percent characters (<code>%%</code>), (<a HREF="#REF20875">See &quot;Comment each function&quot; on page 27.</a>).
+<p>Comments within Erlang code shall start with one percent character (<code>%</code>). If a line only contains a comment, it shall be indented as Erlang code. This kind of comment shall be placed above the statement it refers to. If the comment can be placed at the same line as the statement, this is preferred.
+<pre>
+%% Comment about function
+some_useful_functions(UsefulArgugument) -&gt;
+  another_functions(UsefulArgugument),    % Comment at end of line
+  % Comment about complicated_stmnt at the same level of indentation
+  complicated_stmnt,
+......
+
+</pre>
+<h3><a NAME="REF20875"> 8.6  Comment each function</a></h3>
+<p>The important things to document are:
+
+<ul>
+<p><li>The purpose of the function.
+<br>
+<p><li>The domain of valid inputs to the function. That is, data structures of the arguments to the functions together with their meaning.
+<br>
+<p><li>The domain of the output of the function. That is, all possible data structures of the return value together with their meaning.
+<br>
+<p><li>If the function implements a complicated algorithm, describe it.
+<br>
+<p><li>The possible causes of failure and exit signals which may be generated by <code>exit/1</code>, <code>throw/1</code> or any non-obvious run time errors. Note the difference between failure and returning an error.
+<br>
+<p><li>Any side effect of the function.
+<br></ul>
+
+
+<p>Example:
+<pre>
+%%----------------------------------------------------------------------
+%% Function: get_server_statistics/2
+%% Purpose: Get various information from a process.
+%% Args:   Option is normal|all.
+%% Returns: A list of {Key, Value} 
+%%     or {error, Reason} (if the process is dead)
+%%----------------------------------------------------------------------
+get_server_statistics(Option, Pid) when pid(Pid) -&gt;
+  ......
+</pre>
+<h3><a NAME="HDR37"> 8.7  Data structures</a></h3>
+<p>The record should be defined together with a plan text description. Example:
+<pre>
+%% File: my_data_structures.h
+
+%%---------------------------------------------------------------------
+%% Data Type: person
+%% where:
+%%    name: A string (default is undefined).
+%%    age: An integer (default is undefined).
+%%    phone: A list of integers (default is []).
+%%    dict:     A dictionary containing various information about the person. 
+%%       A {Key, Value} list (default is the empty list).
+%%----------------------------------------------------------------------
+-record(person, {name, age, phone = [], dict = []}).
+</pre>
+
+<h3><a NAME="HDR38"> 8.8  File headers, copyright</a></h3>
+<p>Each file of source code must start with copyright information, for example:
+<pre>
+
+%%%--------------------------------------------------------------------- 
+%%% Copyright Ericsson Telecom AB 1996
+%%%
+%%% All rights reserved. No part of this computer programs(s) may be 
+%%% used, reproduced,stored in any retrieval system, or transmitted,
+%%% in any form or by any means, electronic, mechanical, photocopying,
+%%% recording, or otherwise without prior written permission of 
+%%% Ericsson Telecom AB.
+%%%--------------------------------------------------------------------- 
+
+</pre>
+<h3><a NAME="HDR39"> 8.9  File headers, revision history</a></h3>
+<p>Each file of source code must be documented with its revision history which shows who has been working with the files and what they have done to it.
+<pre>
+%%%--------------------------------------------------------------------- 
+%%% Revision History
+%%%--------------------------------------------------------------------- 
+%%% Rev PA1 Date 960230 Author Fred Bloggs (ETXXXXX)
+%%% Intitial pre release. Functions for adding and deleting foobars
+%%% are incomplete
+%%%--------------------------------------------------------------------- 
+%%% Rev A Date 960230 Author Johanna Johansson (ETXYYY)
+%%% Added functions for adding and deleting foobars and changed 
+%%% data structures of foobars to allow for the needs of the Baz
+%%% signalling system
+%%%--------------------------------------------------------------------- 
+</pre>
+<h3><a NAME="REF13816"> 8.10  File Header, description</a></h3>
+<p>Each file must start with a short description of the module contained in the file and a brief description of all exported functions.
+<pre>
+%%%--------------------------------------------------------------------- 
+%%% Description module foobar_data_manipulation
+%%%--------------------------------------------------------------------- 
+%%% Foobars are the basic elements in the Baz signalling system. The
+%%% functions below are for manipulating that data of foobars and for
+%%% etc etc etc
+%%%--------------------------------------------------------------------- 
+%%% Exports
+%%%--------------------------------------------------------------------- 
+%%% create_foobar(Parent, Type)
+%%%   returns a new foobar object
+%%%   etc etc etc
+%%%--------------------------------------------------------------------- 
+</pre>
+<p><b>If you know of any weakness, bugs, badly tested features, make a note of them in a special comment, don't try to hide them. If any part of the module is incomplete, add a special comment. </b>Add comments about anything which will be of help to future maintainers of the module.If the product of which the module you are writing is a success, it may still be changed and improved in ten years time by someone you may never meet.
+
+<h3><a NAME="HDR40"> 8.11  Do not comment out old code - remove it</a></h3>
+<p>Add a comment in the revision history to that effect. Remember the source code control system will help you!
+<h3><a NAME="HDR41"> 8.12  Use a source code control system</a></h3>
+<p>All non trivial projects must use a source code control system such as RCS, CVS or Clearcase to keep track of all modules.
+
+<h2><a NAME="REF66257"> 9  The Most Common Mistakes:</a></h2>
+
+<ul>
+<p><li>Writing functions which span many pages (<a HREF="#REF32141">See &quot;Don't write very long functions&quot; on page 23.</a>).
+<br>
+<p><li>Writing functions with deeply nested if's receive's, case's etc (<a HREF="#REF19691">See &quot;Don't write deeply nested code&quot; on page 23.</a>).
+<br>
+<p><li>Writing badly typed functions (<a HREF="#REF32551">See &quot;Use tagged return values&quot; on page 19.</a>).
+<br>
+<p><li>Function names which do not reflect what the functions do (<a HREF="#REF17122">See &quot;Function names&quot; on page 24.</a>).
+<br>
+<p><li>Variable names which are meaningless (<a HREF="#REF10726">See &quot;Variable names&quot; on page 23.</a>).
+<br>
+<p><li>Using processes when they are not needed (<a HREF="#REF34191">See &quot;Assign exactly one parallel process to each true concurrent activity in the system&quot; on page 14.</a>).
+<br>
+<p><li>Badly chosen data structures (Bad representations).
+<br>
+<p><li>Bad comments or no comments at all (always document arguments and return value).
+<br>
+<p><li>Unindented code.
+<br>
+<p><li>Using put/get (<a HREF="#REF18861">See &quot;Use the process dictionary with extreme care&quot; on page 20.</a>).
+<br>
+<p><li>No control of the message queues (<a HREF="#REF28631">See &quot;Flush unknown messages&quot; on page 16.</a> and <a HREF="#REF20649">See &quot;Time-outs&quot; on page 18.</a>).
+<br>
+</ul>
+
+
+<h2><a NAME="REF36998"> 10  Required Documents</a></h2>
+<p>This section describes some of the system level documents which are necessary for designing and maintaining system programmed using Erlang.
+<h3><a NAME="HDR42"> 10.1  Module Descriptions</a></h3>
+<p>One chapter per module. Contains description of each module, and all exported functions as follows:
+
+<ul>
+<p><li>the meaning and data structures of the arguments to the functions
+<br>
+<p><li>the meaning and data structure of the return value.
+<br>
+<p><li>the purpose of the function
+<br>
+<p><li>the possible causes of failure and exit signals which may be generated by explicit calls to <code>exit/1</code>.
+<br></ul>
+
+
+<p><b>Format of document to be defined later</b>:
+<h3><a NAME="REF47531"> 10.2  Message Descriptions</a></h3>
+<p>The format of all inter-process messages except those defined inside one module.
+<p><b>Format of document to be defined later:</b>
+<h3><a NAME="HDR43"> 10.3  Process</a></h3>
+<p>Description of all registered servers in the system and their interface and purpose.
+<p>Description of the dynamic processes and their interfaces.
+<p><b>Format of document to be defined later:</b>
+<h3><a NAME="REF45959"> 10.4  Error Messages</a></h3>
+<p>Description of error messages
+<p><b>Format of document to be defined later:</b>
+
+
+</body>
+</html>
