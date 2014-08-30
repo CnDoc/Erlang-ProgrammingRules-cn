@@ -9,50 +9,36 @@
 <body>
 <style type="text/css">#modify_div {position: fixed;right: 0px;top: 60px;	background-color: #000000;	height: 30px;width: 100px;border-top-width: 2px;border-right-width: 2px;border-bottom-width: 2px;border-left-width: 2px;border-top-style: dashed;border-right-style: none;border-bottom-style: dashed;border-left-style: dashed;border-top-color: #333333;border-right-color: #333333;border-bottom-color: #333333;border-left-color: #333333;}#modify {display: block;position: fixed;right: 23px;top: 70px;color: #FFFFFF;text-decoration: none;font-size: 12px;font-weight: bold;}#modify:hover {text-decoration: underline;}</style><div id="modify_div"></div><a href="https://github.com/CnDoc/Erlang-ProgrammingRules-cn/edit/gh-pages/doc_cn.html" id="modify" target="_blank">修改本页</a><script>$('#modify_div').css('opacity', '0.6');	</script>
 
-
-
-
-
-
-
-
-
-
-
-
-<!-- Included text starts here -->
-
 <P>
 <HR>
-<center><h2>Programming Rules and Conventions</h2></center>
+<center><h2>编程规则与约定</h2></center>
 
 <hr>
 
-<h2>Table of Contents</h2>
- Author: EPK/NP Klas Eriksson, EUA/SU M Williams, J Armstrong <br>
+<h2>目录</h2>
+ 作者: EPK/NP Klas Eriksson, EUA/SU M Williams, J Armstrong <br>
 Document: EPK/NP 95:035
 
-<p><a HREF="#HDT0">Program Development Using Erlang -
- Programming Rules and Conventions</a>
+<p><a HREF="#HDT0">使用Erlang编程 - 编程规则与约定</a>
 
 
 <ul>
-<a HREF="#REF87730"> 1  Purpose</a>
+<a HREF="#REF87730"> 1  目的</a>
 
 <br>
-<a HREF="#REF76253"> 2  Structure and Erlang Terminology</a>
+<a HREF="#REF76253"> 2  结构和Erlang术语</a>
 
 <br>
-<a HREF="#REF82718"> 3  SW Engineering Principles</a>
+<a HREF="#REF82718"> 3  SW工程原理</a>
 
 <ul>
-<a HREF="#REF59955"> 3.1  Export as few functions as possible from a module</a>
+<a HREF="#REF59955"> 3.1  从模块（module）中尽可能少的导出方法（functions）</a>
 
 <br>
-<a HREF="#REF86715"> 3.2  Try to reduce intermodule dependencies</a>
+<a HREF="#REF86715"> 3.2  尽量减少模块间的依赖关系</a>
 
 <br>
-<a HREF="#REF15399"> 3.3  Put commonly used code into libraries</a>
+<a HREF="#REF15399"> 3.3  把常用的代码放到库</a>
 
 <br>
 <a HREF="#HDR2"> 3.4  Isolate &quot;tricky&quot; or &quot;dirty&quot; code into separate modules</a>
